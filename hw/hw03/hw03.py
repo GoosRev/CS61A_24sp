@@ -28,6 +28,12 @@ def num_eights(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n%10==8:
+        return 1+num_eights(n//10)
+    elif n==0:
+        return 0
+    else :
+        return num_eights(n//10)
 
 
 def digit_distance(n):
@@ -50,6 +56,10 @@ def digit_distance(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <10:
+        return 0
+    else :
+        abs(n%10-n//10%10)+digit_distance(n//10)
 
 
 def interleaved_sum(n, odd_func, even_func):
@@ -72,6 +82,12 @@ def interleaved_sum(n, odd_func, even_func):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n==0:
+        return 0
+    elif n%2==1:
+        return odd_func(n)+interleaved_sum(n-1,odd_func,even_func)
+    else :
+        return even_func(n)+odd_func(n-1)+interleaved_sum(n-2,odd_func,even_func)
 
 
 def next_larger_coin(coin):
@@ -126,6 +142,17 @@ def count_coins(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def count(x,coin):
+        if x==0:
+            return 1
+        elif x<0:
+            return 0
+        if coin == None: #考虑没有更小的硬币的情况
+            return 0
+        cntnothave=count(x,next_smaller_coin(coin))
+        cnthave=count(x-coin,coin)
+        return cnthave+cntnothave
+    return count(total,25)
 
 
 def print_move(origin, destination):
@@ -161,6 +188,13 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    if n==1:
+        print_move(start,end)
+    else :
+        other=6-start-end
+        move_stack(n-1,start,other)
+        print_move(start,end)
+        move_stack(n-1,other,end)
 
 
 from operator import sub, mul
