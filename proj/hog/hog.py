@@ -22,15 +22,19 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    #roll 1之后不应该立即返回
     total=0
+    flag = False
     while num_rolls!=0 :
         tmp=dice()
         if tmp==1:
-            return 1
-        else :
-            total+=tmp
+            flag=True
+        total+=tmp
         num_rolls-=1
-    return total
+    if flag:
+        return 1
+    else :
+        return total
     # END PROBLEM 1
 
 
@@ -43,7 +47,7 @@ def boar_brawl(player_score, opponent_score):
     """
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
-    p=max(player_score%10,1)
+    p=player_score%10
     q=(opponent_score%100)//10
 
     res=3*abs(p-q)
@@ -68,7 +72,7 @@ def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
-    if num_rolls==0:
+    if num_rolls!=0:
         return roll_dice(num_rolls,dice)
     else :
         return boar_brawl(player_score,opponent_score)
@@ -102,6 +106,7 @@ def num_factors(n):
     while i <= n:
         if n % i ==0 :
             cnt += 1
+        i+=1
     return cnt
 
     # END PROBLEM 4
@@ -111,7 +116,7 @@ def sus_points(score):
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
     flag = num_factors(score)
-    if flag == 3 | flag== 4 :
+    if flag == 3 or flag== 4 :
         res = score + 1
         while True:
             if is_prime(res) :
@@ -238,8 +243,16 @@ def is_always_roll(strategy, goal=GOAL):
     """
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
-    if strategy==catch_up:
-        return False
+    i,j=0,0
+    record=strategy(i,j)
+    while i<goal:
+        while j<goal:
+            tmp=strategy(i,j)
+            if tmp!=record :
+                return False
+            j+=1
+        i+=1
+        j=0
     return True
     # END PROBLEM 7
 
@@ -281,13 +294,15 @@ def max_scoring_num_rolls(dice=six_sided, samples_count=1000):
     "*** YOUR CODE HERE ***"
     cnt=1
     max_now=0
-    fct=make_averaged(roll_dice)
+    max_cnt=0
+    fct=make_averaged(roll_dice,samples_count)
     while cnt<=10:
         tmp=fct(cnt,dice)
         if tmp>max_now:
             max_now=tmp
+            max_cnt=cnt
         cnt+=1
-    return max_now
+    return max_cnt #返回最大价值的roll数
     # END PROBLEM 9
 
 
@@ -341,7 +356,7 @@ def boar_strategy(score, opponent_score, threshold=11, num_rolls=6):
 def sus_strategy(score, opponent_score, threshold=11, num_rolls=6):
     """This strategy returns 0 dice when your score would increase by at least threshold."""
     # BEGIN PROBLEM 11
-    if sus_update(0,score,opponent_score,dice)>= threshold:
+    if sus_update(0,score,opponent_score) - score>= threshold:
         return 0
     return num_rolls  # Remove this line once implemented.
     # END PROBLEM 11

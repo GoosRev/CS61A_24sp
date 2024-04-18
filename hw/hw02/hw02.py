@@ -79,7 +79,7 @@ def summation_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    return accumulate(add, 0, n, trem)
+    return accumulate(add, 0, n, term)
 
 
 def product_using_accumulate(n, term):

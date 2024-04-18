@@ -59,7 +59,7 @@ def digit_distance(n):
     if n <10:
         return 0
     else :
-        abs(n%10-n//10%10)+digit_distance(n//10)
+        return abs(n%10-(n//10)%10) + digit_distance(n//10)
 
 
 def interleaved_sum(n, odd_func, even_func):
@@ -82,12 +82,15 @@ def interleaved_sum(n, odd_func, even_func):
     True
     """
     "*** YOUR CODE HERE ***"
-    if n==0:
-        return 0
-    elif n%2==1:
-        return odd_func(n)+interleaved_sum(n-1,odd_func,even_func)
-    else :
-        return even_func(n)+odd_func(n-1)+interleaved_sum(n-2,odd_func,even_func)
+    #修改不能使用mod运算
+    def h(x):
+        if x>n:
+            return 0
+        elif x==n:
+            return odd_func(x)
+        else :
+            return odd_func(x)+even_func(x+1)+h(x+2)
+    return h(1)
 
 
 def next_larger_coin(coin):
