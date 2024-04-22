@@ -92,17 +92,17 @@ def accuracy(typed, source):
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
     if typed_words == [] and source_words == []:
-        return True
+        return 100.0
     elif typed_words == [] or source_words == []:
-        return False
+        return 0.0
     match_suc = 0
-    n = len(typed_words)
+    n = min(len(typed_words),len(source_words))
     i = 0
     while i < n:
         if typed_words[i] == source_words[i]:
             match_suc+=1
         i+=1
-    return 100*match_suc/len(source_words)
+    return 100*match_suc/len(typed_words)
     # END PROBLEM 3
 
 
@@ -153,12 +153,12 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
     if typed_word in word_list :
-        return True
-    diff = [x for x in word_list if diff_function(typed_word, x, limit) <= limit]
-    if diff == []:
         return typed_word
+    diff = [[diff_function(typed_word, vw, limit), vw] for vw in word_list]
+    if min(diff, key=lambda item: item[0])[0] <= limit:
+        return min(diff, key=lambda item: item[0])[1]
     else :
-        return min(diff,lambda item: diff_function(item, typed_word, limit))
+        return typed_word
     # END PROBLEM 5
 
 
@@ -185,8 +185,8 @@ def feline_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    if source == '':
-        return len(source)
+    if source == '' or typed == '':
+        return len(source) + len(typed)
     elif limit < 0:
         return 0
     elif source[0] == typed[0]:
@@ -227,11 +227,11 @@ def minimum_mewtations(typed, source, limit):
     if typed[0] == source[0]: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
-        minimum_mewtations(type[1:],source[1:],limit)
+        return minimum_mewtations(typed[1:],source[1:],limit)
         # END
     else:
         add = minimum_mewtations(typed, source[1:], limit-1) + 1# Fill in these lines
-        remove = minimum_mewtations(typed[1:], source[1:], limit-1) + 1
+        remove = minimum_mewtations(typed[1:], source, limit-1) + 1
         substitute = minimum_mewtations(typed[1:], source[1:], limit-1) + 1
         # BEGIN
         "*** YOUR CODE HERE ***"
@@ -278,18 +278,18 @@ def report_progress(typed, source, user_id, upload):
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
     i = 0
-    flag = True
-    res = 0
-    while i < len(type) and flag:
+    res = 0.0
+    for x in range(len(typed)):
         if typed[i] != source [i]:
-            res = (i + 1)/len(source)
-            flag = False
+            break
         i+=1
+    res = i / len(source)
     report = {
         'id': user_id,
         'progress': res
     }
     upload(report)
+    return res
     # END PROBLEM 8
 
 
@@ -314,12 +314,11 @@ def time_per_word(words, timestamps_per_player):
     "*** YOUR CODE HERE ***"
     times = []
     for i in range(len(timestamps_per_player)):
-        j = 0
         time = []
-        while j < len(timestamps_per_player[i]) - 1:
-            time += timestamps_per_player[j+1] - timestamps_per_player[j]
+        for j in range(len(timestamps_per_player[i]) - 1):
+            time += [timestamps_per_player[i][j+1] - timestamps_per_player[i][j]]
             j+=1
-        times+=time
+        times+=[time]
     return match(words, times)
     # END PROBLEM 9
 
@@ -343,17 +342,16 @@ def fastest_words(match):
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
-    fastword=[]
-    for x in player_indices:
-        word+=[]
+    fastword = [[] for i in player_indices]
+
     for i in word_indices:
         tmp = 0x3f3f3f3f
         record = 0
         for j in player_indices:
-            if time(match, j, i) <= tmp:
+            if time(match, j, i) < tmp:
                 tmp = time(match, j, i)
                 record = j
-        fastword[j]+= [get_word(macth, i)]
+        fastword[record]+= [get_word(match, i)]
     return fastword
     # END PROBLEM 10
 
