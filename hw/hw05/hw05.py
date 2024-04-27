@@ -9,6 +9,16 @@ def hailstone(n):
     1
     """
     "*** YOUR CODE HERE ***"
+    yield n
+    while True:
+      if n == 1:
+        yield 1
+      elif n % 2 == 1:
+        yield 3*n + 1
+        n = 3*n + 1
+      else :
+        yield n//2
+        n //= 2
 
 
 def merge(a, b):
@@ -24,6 +34,19 @@ def merge(a, b):
     [2, 3, 5, 7, 8, 9, 11, 13, 14, 15]
     """
     "*** YOUR CODE HERE ***"
+    now_a = next(a)
+    now_b = next(b)
+    while True:
+      if now_a == now_b:
+        yield now_a
+        now_a = next(a)
+        now_b = next(b)
+      elif now_a > now_b:
+        yield now_b
+        now_b = next(b)
+      else :
+        yield now_a
+        now_a = next(a)
 
 
 def yield_paths(t, value):
@@ -61,10 +84,10 @@ def yield_paths(t, value):
     [[0, 2], [0, 2, 1, 2]]
     """
     if label(t) == value:
-        yield ____
+        yield [value]
     for b in branches(t):
-        for ____ in ____:
-            yield ____
+        for a in yield_paths(b, value):
+            yield [label(t)] + a
 
 
 
