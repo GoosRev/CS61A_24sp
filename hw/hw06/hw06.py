@@ -48,6 +48,37 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, name, price):
+        self.product = name
+        self.price = price
+        self.count = 0
+        self.balance = 0
+    
+    def restock(self, num):
+        self.count += num
+        return f'Current {self.product} stock: {self.count}'
+    
+    def add_funds(self, n):
+        if self.count == 0:
+            return f'Nothing left to vend. Please restock. Here is your ${n}.'
+        else: 
+            self.balance += n
+            return f'Current balance: ${self.balance}'
+            
+    def vend(self):
+        if self.count == 0:
+            return f'Nothing left to vend. Please restock.'
+        elif self.balance == self.price:
+            self.count -= 1
+            self.balance = 0
+            return f'Here is your {self.product}.'
+        elif self.balance < self.price:
+            return f'Please add ${self.price - self.balance} more funds.'
+        else :
+            self.count -= 1
+            tmp = self.balance - self.price
+            self.balance = 0
+            return f'Here is your {self.product} and ${tmp} change.'
 
 
 def store_digits(n):
@@ -68,6 +99,12 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    res = Link.empty()
+
+    while n > 0:
+        res = Link(n%10, res)
+        n //= 10
+    return res
 
 
 def deep_map_mut(func, lnk):
