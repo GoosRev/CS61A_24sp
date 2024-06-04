@@ -8,6 +8,11 @@
 (define (enumerate s)
   ; BEGIN PROBLEM 15
   'replace-this-line
+  (define (cal index curr)
+    (if (null? curr) nil
+        (cons (list index (car curr)) (cal (+ index 1) (cdr curr))))  
+    )
+    (cal 0 s)
   )
   ; END PROBLEM 15
 
@@ -18,6 +23,12 @@
 (define (merge ordered? s1 s2)
   ; BEGIN PROBLEM 16
   'replace-this-line
+  (cond ((null? s1) s2)
+        ((null? s2) s1)
+        (else 
+              (if (ordered? (car s1) (car s2))
+                  (cons (car s1) (merge ordered? (cdr s1) s2))
+                  (cons (car s2) (merge ordered? s1 (cdr s2))))))
   )
   ; END PROBLEM 16
 
